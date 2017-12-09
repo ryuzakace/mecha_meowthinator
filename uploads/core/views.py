@@ -1,15 +1,18 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-
+from .Main import main
 from uploads.core.models import Document
 from uploads.core.forms import DocumentForm
+import os
 
 
+from os.path import dirname, abspath
+d = dirname(dirname(dirname(abspath(__file__))))
 def home(request):
-
     return render(request, 'core/home.html')
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def simple_upload(request):
     if request.method == 'POST' and request.FILES['myfile']:
@@ -27,7 +30,8 @@ def model_form_upload(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            request.POST['texx']='shirish'
+            request.POST['texx']=main(d+'/media/documents/'+str(request.FILES['document']))
+            print(d+'/media/documents/'+str(request.FILES['document']))
             form = DocumentForm(request.POST, request.FILES)
 
             form.save()
